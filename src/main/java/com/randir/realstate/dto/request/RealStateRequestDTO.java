@@ -1,15 +1,15 @@
 package com.randir.realstate.dto.request;
 
-import com.randir.realstate.enums.PropertyType;
+import com.randir.realstate.enums.RealStateType;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Builder
 @Getter
-public class PropertyRequestDTO {
+public class RealStateRequestDTO {
 
-    private PropertyType propertyType;
+    private RealStateType realStateType;
     private String description;
     private Integer rooms;
     private Integer baths;

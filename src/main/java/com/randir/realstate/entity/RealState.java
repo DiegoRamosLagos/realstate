@@ -5,7 +5,7 @@ import java.util.Date;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import com.randir.realstate.enums.PropertyType;
+import com.randir.realstate.enums.RealStateType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,17 +20,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "properties")
+@Table(name = "real_states")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Property {
+public class RealState {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     @Enumerated(EnumType.STRING)
-    @Column(name = "property_type", nullable = false)
-    private PropertyType propertyType;
+    @Column(name = "real_state_type", nullable = false)
+    private RealStateType realStateType;
     @Column(name = "description", nullable = false)
     private String description;
     @Column(name = "rooms", nullable = false)
