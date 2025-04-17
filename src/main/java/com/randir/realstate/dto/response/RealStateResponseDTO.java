@@ -16,5 +16,6 @@ public class RealStateResponseDTO {
     private Integer baths;
     private Float buildedSquareMeters;
     private Float totalSquareMeters;
+    private String updatedAt;
 
 }

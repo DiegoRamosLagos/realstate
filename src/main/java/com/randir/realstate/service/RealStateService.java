@@ -13,4 +13,6 @@ public interface RealStateService {
 
     public RealStateResponseDTO createRealState(RealStateRequestDTO input);
 
+    public RealStateResponseDTO updateRealState(Integer id, RealStateRequestDTO input);
+
 }

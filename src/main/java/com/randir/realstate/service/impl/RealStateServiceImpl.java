@@ -32,8 +32,7 @@ public class RealStateServiceImpl implements RealStateService {
 
     @Override
     public RealStateResponseDTO listRealStateById(Integer id) {
-        RealState realState = realStateRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Property id: " + id + " not found"));
+        RealState realState = getRealStateById(id);
 
         return RealStateResponseDTO.builder()
                 .id(realState.getId())
@@ -59,6 +58,30 @@ public class RealStateServiceImpl implements RealStateService {
         RealState onDB = realStateRepository.save(realState);
         return RealStateResponseDTO.builder()
                 .id(onDB.getId()).build();
+    }
+
+    @Override
+    public RealStateResponseDTO updateRealState(Integer id, RealStateRequestDTO input) {
+        RealState onDbRealState = getRealStateById(id);
+
+        onDbRealState.setRealStateType(input.getRealStateType());
+        onDbRealState.setDescription(input.getDescription());
+        onDbRealState.setBaths(input.getBaths());
+        onDbRealState.setRooms(input.getRooms());
+        onDbRealState.setBuildedSquareMeters(input.getBuildedSquareMeters());
+        onDbRealState.setTotalSquareMeters(input.getTotalSquareMeters());
+
+        RealState updatedRealState = realStateRepository.save(onDbRealState);
+
+        return RealStateResponseDTO.builder()
+                .id(updatedRealState.getId())
+                .updatedAt(updatedRealState.getUpdatedAt().toString())
+                .build();
+    }
+
+    private RealState getRealStateById(Integer id) {
+        return realStateRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Property id: " + id + " not found"));
     }
 
 }

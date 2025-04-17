@@ -8,7 +8,6 @@ import lombok.Getter;
 @Builder
 @Getter
 public class RealStateRequestDTO {
-
     private RealStateType realStateType;
     private String description;
     private Integer rooms;

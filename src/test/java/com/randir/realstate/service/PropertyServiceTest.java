@@ -1,11 +1,13 @@
 package com.randir.realstate.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,14 +35,14 @@ public class PropertyServiceTest {
     private RealStateServiceImpl realStateService;
 
     @Test
-    public void ListAllProperties_GivenACallToRetrieveAllProperties_ShouldSameSize() {
+    public void ListAllRealStates_GivenACallToRetrieveAllRealStates_ShouldSameSize() {
 
         // Arrange
         List<RealStateResponseDTO> expectedResult = List.of(
                 RealStateResponseDTO.builder()
                         .id(1)
                         .realStateType(RealStateType.HOUSE)
-                        .description("A basic description about the property")
+                        .description("A basic description about the RealState")
                         .rooms(3)
                         .baths(2)
                         .buildedSquareMeters(80F)
@@ -48,7 +50,7 @@ public class PropertyServiceTest {
                         .build());
         RealState realState = new RealState();
         realState.setId(1);
-        realState.setDescription("A basic description about the property");
+        realState.setDescription("A basic description about the RealState");
         realState.setRealStateType(RealStateType.HOUSE);
         realState.setRooms(3);
         realState.setBaths(2);
@@ -68,12 +70,12 @@ public class PropertyServiceTest {
     }
 
     @Test
-    public void ListPropertyById_GivenOneSpecificId_ShouldReturnTheSameDescription() {
+    public void ListRealStateById_GivenOneSpecificId_ShouldReturnTheSameDescription() {
         // Arrange
         RealStateResponseDTO expectedResult = RealStateResponseDTO.builder()
                 .id(1)
                 .realStateType(RealStateType.HOUSE)
-                .description("A basic description about the property")
+                .description("A basic description about the RealState")
                 .rooms(3)
                 .baths(2)
                 .buildedSquareMeters(80F)
@@ -81,7 +83,7 @@ public class PropertyServiceTest {
                 .build();
         RealState realState = new RealState();
         realState.setId(1);
-        realState.setDescription("A basic description about the property");
+        realState.setDescription("A basic description about the RealState");
         realState.setRealStateType(RealStateType.HOUSE);
         realState.setRooms(3);
         realState.setBaths(2);
@@ -98,7 +100,7 @@ public class PropertyServiceTest {
     }
 
     @Test
-    public void ListPropertyById_GivenOneSpecificIdAndNotFound_ShouldThrowsResourceNotFoundException() {
+    public void ListRealStateById_GivenOneSpecificIdAndNotFound_ShouldThrowsResourceNotFoundException() {
 
         assertThrows(ResourceNotFoundException.class, () -> {
             realStateService.listRealStateById(1);
@@ -106,11 +108,11 @@ public class PropertyServiceTest {
     }
 
     @Test
-    public void CreatePropertyById_GivenOneSpecificId_ShouldReturnThePropertyResponse() {
+    public void CreateRealState_GivenOneSpecificInput_ShouldReturnThePropertyResponseIdField() {
         // Arrange
         RealStateRequestDTO mockedRequest = RealStateRequestDTO.builder()
                 .realStateType(RealStateType.HOUSE)
-                .description("A basic description about the property")
+                .description("A basic description about the RealState")
                 .rooms(3)
                 .baths(2)
                 .buildedSquareMeters(80F)
@@ -122,7 +124,7 @@ public class PropertyServiceTest {
                 .build();
         RealState realState = new RealState();
         realState.setId(1);
-        realState.setDescription("A basic description about the property");
+        realState.setDescription("A basic description about the RealState");
         realState.setRealStateType(RealStateType.HOUSE);
         realState.setRooms(3);
         realState.setBaths(2);
@@ -138,7 +140,44 @@ public class PropertyServiceTest {
         assertEquals(expectedResult.getId(), actualResult.getId());
     }
 
-    public void UpdatePropertyById_GivenOneSpecificIdAndUpdateTheProperty_ShouldReturnThePropertyResponse() {
+    @Test
+    public void UpdateRealStateById_GivenOneSpecificRealState_ShouldReturnTheUpdatedRealStateResponseWithTheCorrectId() {
+
+        RealStateRequestDTO input = RealStateRequestDTO.builder()
+                .realStateType(RealStateType.OFFICE)
+                .description("Updated Description")
+                .baths(2)
+                .rooms(2)
+                .buildedSquareMeters(200F)
+                .totalSquareMeters(200F)
+                .build();
+
+        RealState mockedFindRealState = new RealState();
+        mockedFindRealState.setId(1);
+        mockedFindRealState.setRealStateType(RealStateType.OFFICE);
+        mockedFindRealState.setDescription("To be updated");
+        mockedFindRealState.setBaths(2);
+        mockedFindRealState.setRooms(2);
+        mockedFindRealState.setBuildedSquareMeters(200F);
+        mockedFindRealState.setTotalSquareMeters(200F);
+        mockedFindRealState.setCreatedAt(LocalDateTime.now());
+
+        RealState updatedRealState = new RealState();
+        updatedRealState.setRealStateType(input.getRealStateType());
+        updatedRealState.setDescription(input.getDescription());
+        updatedRealState.setBaths(input.getBaths());
+        updatedRealState.setRooms(input.getRooms());
+        updatedRealState.setBuildedSquareMeters(input.getBuildedSquareMeters());
+        updatedRealState.setTotalSquareMeters(input.getTotalSquareMeters());
+        updatedRealState.setCreatedAt(mockedFindRealState.getCreatedAt());
+        updatedRealState.setUpdatedAt(LocalDateTime.now());
+
+        when(realStateRepository.findById(anyInt())).thenReturn(Optional.of(mockedFindRealState));
+        when(realStateRepository.save(any(RealState.class))).thenReturn(updatedRealState);
+
+        RealStateResponseDTO actualResult = realStateService.updateRealState(1, input);
+
+        assertNotEquals(actualResult.getId(), mockedFindRealState.getId());
 
     }
 
