@@ -84,4 +84,15 @@ public class RealStateServiceImpl implements RealStateService {
                 .orElseThrow(() -> new ResourceNotFoundException("Property id: " + id + " not found"));
     }
 
+    @Override
+    public Integer deleteRealState(Integer id) {
+        try {
+            realStateRepository.deleteById(id);
+        } catch (IllegalArgumentException ex) {
+            throw new IllegalArgumentException("Delete Operation not allowed", ex);
+        }
+
+        return id;
+    }
+
 }

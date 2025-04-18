@@ -15,4 +15,6 @@ public interface RealStateService {
 
     public RealStateResponseDTO updateRealState(Integer id, RealStateRequestDTO input);
 
+    public Integer deleteRealState(Integer id);
+
 }

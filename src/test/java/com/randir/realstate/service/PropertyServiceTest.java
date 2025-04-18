@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
@@ -15,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.randir.realstate.dto.request.RealStateRequestDTO;
@@ -178,6 +181,30 @@ public class PropertyServiceTest {
         RealStateResponseDTO actualResult = realStateService.updateRealState(1, input);
 
         assertNotEquals(actualResult.getId(), mockedFindRealState.getId());
+
+    }
+
+    @Test
+    public void DeleteRealState_GivenOneSpecificId_ShouldReturnTheId() {
+
+        doNothing().when(realStateRepository).deleteById(anyInt());
+
+        Integer actualResult = realStateService.deleteRealState(1);
+
+        assertEquals(1, actualResult);
+
+    }
+
+    @Test
+    public void DeleteRealState_GivenOneSpecificIdAndTheIdIsNull_ShouldThrowsAnIllegalArgumentException() {
+
+        doThrow(IllegalArgumentException.class).when(realStateRepository).deleteById(null);
+
+        IllegalArgumentException actualException = assertThrows(IllegalArgumentException.class, () -> {
+            realStateService.deleteRealState(null);
+        });
+
+        assertEquals("Delete Operation not allowed", actualException.getMessage());
 
     }
 
